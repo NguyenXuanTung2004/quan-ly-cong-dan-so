@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hồ sơ - Công dân số</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <header class="clean-header">
+        <div class="container header-wrapper">
+            <a href="index.html" class="brand-logo"><i class="fa-solid fa-building-shield logo-icon"></i><span class="logo-text"><span>Hệ thống</span><small>Công Dân Số</small></span></a>
+            <nav class="clean-nav"><ul><li><a href="index.html">Trang chủ</a></li><li><a href="dashboard.html">Bảng điều khiển</a></li></ul></nav>
+            <div class="header-right" id="profileHeaderArea">
+                <!-- JS will render avatar + dropdown / login state here -->
+                <a href="login.html" id="loginLink" class="btn-login-pill">Đăng nhập <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container" style="padding: 60px 20px; max-width:1000px;">
+        <div class="profile-card glass" style="padding:26px; border-radius:14px;">
+            <div style="display:flex; gap:20px; align-items:center;">
+                <div id="profileAvatar" style="width:86px; height:86px; border-radius:50%; background:#e6eefc; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:28px;"></div>
+                <div>
+                    <h2 id="profileName" style="margin:0; color:#fff">Người dùng</h2>
+                    <div id="profileEmail" style="color:rgba(255,255,255,0.75); margin-top:6px;">Không có thông tin</div>
+                </div>
+            </div>
+
+            <section style="margin-top:22px; color:rgba(255,255,255,0.9);">
+                <h3 style="margin-bottom:6px;">Thông tin cá nhân</h3>
+                <div id="profileDetails">Không có dữ liệu hồ sơ.</div>
+            </section>
+
+            <div style="margin-top:18px; display:flex; gap:10px; justify-content:flex-end;">
+                <a id="editProfileBtn" class="btn btn-secondary">Chỉnh sửa</a>
+                <button id="logoutBtn" class="btn btn-primary">Đăng xuất</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+            if (userInfo && (userInfo.HoTen || userInfo.hoTen || userInfo.name)) {
+                const name = userInfo.HoTen || userInfo.hoTen || userInfo.name;
+                document.getElementById('profileName').textContent = name;
+                document.getElementById('profileEmail').textContent = userInfo.Email || userInfo.email || userInfo.username || '';
+                const avatar = userInfo.avatar || userInfo.Avatar || '';
+                const avEl = document.getElementById('profileAvatar');
+                if (avatar) {
+                    avEl.innerHTML = `<img src="${avatar}" style="width:86px;height:86px;border-radius:50%;object-fit:cover;" alt="${name}">`;
+                } else {
+                    const initials = name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+                    avEl.textContent = initials;
+                }
+            }
+
+            document.getElementById('logoutBtn').addEventListener('click', () => {
+                localStorage.removeItem('userToken');
+                localStorage.removeItem('userInfo');
+                window.location.href = 'index.html';
+            });
+
+            // header auth replacement (avatar + menu) similar to index
+            (function setupHeaderAuth(){
+                const loginLink = document.getElementById('loginLink');
+                if (!loginLink) return;
+                const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+                const userToken = localStorage.getItem('userToken');
+                if (userToken && userInfo && (userInfo.HoTen || userInfo.hoTen || userInfo.name)) {
+                    const name = userInfo.HoTen || userInfo.hoTen || userInfo.name || 'Người dùng';
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'avatar-wrapper';
+                    const avatarBtn = document.createElement('button');
+                    avatarBtn.className = 'avatar-btn';
+                    avatarBtn.setAttribute('aria-expanded','false');
+                    const initials = name.split(' ').map(n => n[0]).join('').slice(0,2).toUpperCase();
+                    avatarBtn.innerHTML = `<span class="avatar-initials">${initials}</span>`;
+                    const menu = document.createElement('div');
+                    menu.className = 'avatar-menu';
+                    menu.innerHTML = `<a href="profile.html" class="menu-item">Hồ sơ</a><a href="#settings" class="menu-item">Cài đặt</a><button class="menu-item logout">Đăng xuất</button>`;
+                    avatarBtn.addEventListener('click', () => {
+                        const open = menu.classList.toggle('open');
+                        avatarBtn.setAttribute('aria-expanded', String(open));
+                    });
+                    menu.querySelector('.logout').addEventListener('click', () => {
+                        localStorage.removeItem('userToken');
+                        localStorage.removeItem('userInfo');
+                        window.location.href = 'index.html';
+                    });
+                    wrapper.appendChild(avatarBtn);
+                    wrapper.appendChild(menu);
+                    loginLink.replaceWith(wrapper);
+                }
+            })();
+        });
+    </script>
+</body>
+</html>

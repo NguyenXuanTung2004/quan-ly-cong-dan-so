@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - Hệ thống Quản lý Công dân số</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-page"> <div class="login-container">
+        <form id="registerForm">
+            <div class="form-header">
+                <i class="fa-solid fa-user-plus"></i>
+                <h2>Tạo Tài Khoản Mới</h2>
+            </div>
+
+            <div class="input-group">
+                <label for="hoTen">Họ và Tên:</label>
+                <div class="input-with-icon">
+                    <i class="fa-solid fa-address-card"></i>
+                    <input type="text" id="hoTen" placeholder="Nhập họ và tên..." required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="email">Email:</label>
+                <div class="input-with-icon">
+                    <i class="fa-solid fa-envelope"></i>
+                    <input type="email" id="email" placeholder="Nhập email..." required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="soDinhDanh">Số Định Danh Cá Nhân:</label>
+                <div class="input-with-icon">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="soDinhDanh" placeholder="Nhập số định danh..." required>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label for="matKhau">Mật Khẩu:</label>
+                <div class="input-with-icon">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="matKhau" placeholder="Nhập mật khẩu..." required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="xacNhanMatKhau">Xác Nhận Mật Khẩu:</label>
+                <div class="input-with-icon">
+                    <i class="fa-solid fa-check-double"></i>
+                    <input type="password" id="xacNhanMatKhau" placeholder="Nhập lại mật khẩu..." required>
+                </div>
+            </div>
+
+            <button type="submit">Đăng Ký</button>
+
+            <div id="message" class="message-box">
+                </div>
+
+            <div class="register-link"> <p>Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a></p>
+            </div>
+        </form>
+    </div>
+    
+    <script src="auth.js"></script>
+
+</body>
+</html>

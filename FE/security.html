@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>An ninh & Bảo mật - Công Dân Số</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --secondary: #64748b;
+            --success: #10b981;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --header-bg: rgba(15, 23, 42, 0.6);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* Hình nền đồng bộ Dashboard */
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.85), rgba(15, 23, 42, 0.95)), 
+                        url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        .navbar {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            background: var(--header-bg);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .back-btn:hover { color: #38bdf8; }
+
+        .page-title {
+            margin-left: 20px;
+            padding-left: 20px;
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* LAYOUT CHÍNH */
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr; /* Chia cột trái lớn hơn chút */
+            gap: 30px;
+        }
+
+        /* CARDS */
+        .glass-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-header i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            background: #eff6ff;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #0f172a;
+        }
+
+        /* FORM STYLES */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            background: #f8fafc;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+        }
+
+        .form-control[readonly] {
+            background-color: #e2e8f0;
+            color: #64748b;
+            cursor: not-allowed;
+        }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-save {
+            background: #0f172a;
+            color: white;
+        }
+        .btn-save:hover { background: #1e293b; transform: translateY(-2px); }
+
+        .btn-password {
+            background: white;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+        .btn-password:hover { background: #eff6ff; }
+
+        /* LỊCH SỬ ĐĂNG NHẬP */
+        .history-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .history-item:last-child { border-bottom: none; }
+
+        .device-icon {
+            font-size: 1.2rem;
+            color: #64748b;
+            background: #f1f5f9;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .history-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 0.95rem;
+            color: #0f172a;
+        }
+
+        .history-info p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .history-ip {
+            margin-left: auto;
+            font-size: 0.8rem;
+            background: #e0f2fe;
+            color: #0369a1;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 500;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .main-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="dashboard.html" class="back-btn">
+            <i class="fa-solid fa-arrow-left"></i> Quay lại Dashboard
+        </a>
+        <div class="page-title">Cài Đặt & Bảo Mật</div>
+    </nav>
+
+    <div class="main-container">
+        
+        <div class="left-column">
+            
+            <div class="glass-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-address-card"></i>
+                    <h3>Thông tin liên hệ</h3>
+                </div>
+                <form id="updateProfileForm">
+                    <div class="form-group">
+                        <label>Họ và tên</label>
+                        <input type="text" id="profileName" class="form-control" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Email <span style="color:red">*</span></label>
+                        <input type="email" id="profileEmail" class="form-control" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="text" id="profilePhone" class="form-control" placeholder="0xxxxxxxxx">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Tôn giáo</label>
+                        <input type="text" id="profileReligion" class="form-control" placeholder="Nhập tôn giáo...">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Địa chỉ hiện tại</label>
+                        <input type="text" id="profileAddress" class="form-control" placeholder="Nhập địa chỉ...">
+                    </div>
+
+                    <button type="submit" class="btn-action btn-save">
+                        <i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi
+                    </button>
+                </form>
+            </div>
+
+            <div class="glass-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-key"></i>
+                    <h3>Đổi mật khẩu</h3>
+                </div>
+                <form id="changePassForm">
+                    <div class="form-group">
+                        <label>Mật khẩu hiện tại</label>
+                        <input type="password" id="currentPass" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Mật khẩu mới</label>
+                        <input type="password" id="newPass" class="form-control" required placeholder="Tối thiểu 6 ký tự">
+                    </div>
+                    <div class="form-group">
+                        <label>Xác nhận mật khẩu mới</label>
+                        <input type="password" id="confirmPass" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn-action btn-password">
+                        Cập nhật mật khẩu
+                    </button>
+                </form>
+            </div>
+
+        </div>
+
+        <div class="right-column">
+            <div class="glass-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <h3>Lịch sử đăng nhập</h3>
+                </div>
+                
+                <div class="history-list" id="historyListContainer">
+                    <div style="text-align: center; padding: 20px; color: #64748b;">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="security.js"></script>
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dịch vụ công trực tuyến</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 p-6">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-red-700 uppercase"><i class="fas fa-star text-yellow-500 mr-2"></i>Dịch vụ công trực tuyến</h1>
+            <p class="text-gray-600">Thực hiện thủ tục hành chính nhanh chóng, tiện lợi.</p>
+        </div>
+        <div class="mb-4 pt-4">
+    <a href="dashboard.html" class="inline-flex items-center text-gray-600 hover:text-red-700 transition-colors duration-200 font-medium">
+        <i class="fas fa-arrow-left mr-2"></i>
+        Trở về Trang chủ
+    </a>
+</div>
+        <div class="border-b border-gray-200 mb-6">
+            <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
+                <li class="mr-2">
+                    <button onclick="switchTab('services')" id="tab-services" class="inline-block p-4 text-red-600 border-b-2 border-red-600 rounded-t-lg active hover:text-red-600 hover:border-red-600 group">
+                        <i class="fas fa-list-alt mr-2"></i>Danh sách thủ tục
+                    </button>
+                </li>
+                <li class="mr-2">
+                    <button onclick="switchTab('records')" id="tab-records" class="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 group">
+                        <i class="fas fa-history mr-2"></i>Hồ sơ của tôi
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div id="content-services">
+            <div id="service-loading" class="text-center py-10 hidden"><i class="fas fa-spinner fa-spin fa-2x text-red-600"></i></div>
+            
+            <div id="service-groups-container" class="space-y-8">
+                </div>
+        </div>
+
+        <div id="content-records" class="hidden">
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full leading-normal">
+                    <thead>
+                        <tr>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Mã HS</th>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Loại dịch vụ</th>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Ngày gửi</th>
+                            <th class="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        </tbody>
+                </table>
+                <div id="history-empty" class="p-5 text-center text-gray-500 hidden">Bạn chưa gửi hồ sơ nào.</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="applyModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900 bg-opacity-50 flex items-center justify-center p-4">
+        <div class="relative bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-4 border-b rounded-t bg-red-700 text-white">
+                <h3 class="text-lg font-semibold" id="modalTitle">Tên dịch vụ</h3>
+                <button onclick="closeModal()" class="text-white hover:text-gray-200">
+                    <i class="fas fa-times fa-lg"></i>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-info-circle text-blue-500"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-blue-700 font-bold">Cơ sở pháp lý:</p>
+                            <p class="text-sm text-blue-600 mt-1 italic" id="modalLegalBase">Loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="dvcForm" onsubmit="submitDVC(event)" enctype="multipart/form-data">
+                    <input type="hidden" id="inputMaDichVu" name="maDichVu">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900">Họ và tên người nộp</label>
+                            <input type="text" id="inputNguoiNop" name="nguoiNop" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
+                        </div>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900">Số CCCD/ĐDCN</label>
+                            <input type="text" id="inputCCCD" name="cccdNguoiNop" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block mb-2 text-sm font-medium text-gray-900">Thông tin chi tiết tờ khai</label>
+                        <div id="dynamic-form-fields" class="mb-4 space-y-4">
+        </div>
+                        <p class="mt-1 text-xs text-gray-500">* Vui lòng ghi rõ thông tin cần thiết cho thủ tục này.</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block mb-2 text-sm font-medium text-gray-900">Tài liệu đính kèm (Ảnh/PDF)</label>
+                        <input class="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" id="inputFile" name="fileDinhKem" type="file">
+                    </div>
+
+                    <div class="flex justify-end pt-4 border-t">
+                        <button type="button" onclick="closeModal()" class="text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-red-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 mr-2">Hủy</button>
+                        <button type="submit" class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Gửi hồ sơ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="public_service.js"></script>
+</body>
+</html>

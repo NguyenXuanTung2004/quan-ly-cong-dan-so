@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Việc Làm</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', 'Roboto', system-ui, -apple-system, sans-serif;
+            background-color: #f3f4f6;
+        }
+        
+        .job-card {
+            background-color: #ffffff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+        .job-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .status-working {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .status-unemployed {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Icon wrapper styles */
+        .icon-box {
+            width: 3rem;
+            height: 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 0.5rem;
+            flex-shrink: 0;
+        }
+        .bg-indigo-100 { background-color: #e0e7ff; color: #4338ca; }
+        .bg-orange-100 { background-color: #ffedd5; color: #c2410c; }
+        .bg-blue-100 { background-color: #dbeafe; color: #1e40af; }
+
+        /* Button styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .btn-primary { background-color: #2563eb; color: white; }
+        .btn-primary:hover { background-color: #1d4ed8; }
+        .btn-outline { border: 1px solid #d1d5db; background-color: white; color: #374151; }
+        .btn-outline:hover { background-color: #f3f4f6; }
+        .btn-danger { background-color: #ef4444; color: white; }
+        .btn-danger:hover { background-color: #dc2626; }
+
+        /* Form inputs */
+        input, select, textarea {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            margin-top: 0.25rem;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
+        }
+
+        /* Fix modal z-index */
+        .modal-overlay {
+            z-index: 50; /* Đảm bảo overlay nằm trên cùng */
+        }
+        .modal-container {
+            z-index: 60; /* Đảm bảo nội dung modal nằm trên overlay */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Quản Lý Việc Làm</h1>
+                <p class="text-gray-500 mt-1">Cập nhật hồ sơ và tìm kiếm cơ hội nghề nghiệp</p>
+            </div>
+            <a href="dashboard.html" class="btn btn-outline mt-4 sm:mt-0">
+                <i class="fas fa-arrow-left mr-2"></i> Quay lại Dashboard
+            </a>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="hidden fixed top-5 right-5 z-50 transform transition-all duration-300">
+            <div class="bg-white border-l-4 border-green-500 shadow-lg rounded-lg p-4 flex items-center">
+                <div class="text-green-500 mr-3"><i class="fas fa-check-circle text-xl"></i></div>
+                <div class="font-medium text-gray-800" id="toast-message">Thông báo thành công</div>
+            </div>
+        </div>
+
+        <!-- 1. Trạng thái việc làm hiện tại -->
+        <div class="job-card mb-8">
+            <div class="flex justify-between items-start mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="icon-box bg-indigo-100">
+                        <i class="fas fa-briefcase text-xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-800">Trạng thái công việc</h2>
+                        <p class="text-sm text-gray-500">Cập nhật tình trạng hiện tại của bạn</p>
+                    </div>
+                </div>
+                <button id="update-status-btn" class="btn btn-primary">
+                    <i class="fas fa-pen mr-2"></i> Cập nhật
+                </button>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <div class="flex items-center gap-3">
+                    <span class="text-gray-600 font-medium">Tình trạng hiện tại:</span>
+                    <span id="current-status-badge" class="status-badge status-working">
+                        Đang tải...
+                    </span>
+                </div>
+                <!-- Khu vực hiển thị nút đăng ký BHTN nếu thất nghiệp -->
+                <div id="unemployment-actions" class="mt-4 pt-4 border-t border-gray-200 hidden">
+                    <p class="text-sm text-gray-600 mb-3">
+                        <i class="fas fa-info-circle text-blue-500 mr-1"></i>
+                        Bạn đang thất nghiệp? Bạn có thể đăng ký nhận trợ cấp bảo hiểm thất nghiệp.
+                    </p>
+                    <button id="register-insurance-btn" class="btn btn-outline text-blue-600 border-blue-200 hover:bg-blue-50">
+                        <i class="fas fa-file-contract mr-2"></i> Đăng ký BHTN
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- 2. Lịch sử làm việc (Kinh nghiệm) -->
+            <div class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800">Kinh nghiệm làm việc</h2>
+                    <button id="add-job-history-btn" class="btn btn-primary text-sm">
+                        <i class="fas fa-plus mr-1"></i> Thêm mới
+                    </button>
+                </div>
+
+                <div id="job-history-list" class="space-y-4">
+                    <!-- JS sẽ render danh sách vào đây -->
+                    <div class="animate-pulse space-y-4">
+                        <div class="h-24 bg-gray-200 rounded-lg"></div>
+                        <div class="h-24 bg-gray-200 rounded-lg"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. Tìm kiếm việc làm -->
+            <div class="space-y-6">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl font-bold text-gray-800">Việc làm phù hợp</h2>
+                    <a href="#" class="text-blue-600 text-sm hover:underline">Xem tất cả</a>
+                </div>
+
+                <!-- Thanh tìm kiếm -->
+                <div class="relative">
+                    <input type="text" id="job-search-input" placeholder="Tìm theo tên công việc, công ty..." class="pl-10 pr-4 py-2 w-full rounded-lg border-gray-300">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                </div>
+
+                <div id="job-search-results" class="space-y-4">
+                    <!-- JS sẽ render tin tuyển dụng vào đây -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================= -->
+    <!-- MODALS -->
+    <!-- ========================================= -->
+
+    <!-- 1. Modal Cập nhật Trạng thái -->
+    <div id="statusModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 modal-overlay">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md transform transition-all modal-container">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold text-gray-900">Cập nhật trạng thái</h3>
+                    <button onclick="closeModal('statusModal')" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                <form id="statusForm">
+                    <div class="space-y-3">
+                        <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="jobStatus" value="1" class="h-4 w-4 text-blue-600">
+                            <div class="ml-3">
+                                <span class="block font-medium text-gray-900">Đang làm việc</span>
+                                <span class="block text-sm text-gray-500">Tôi hiện đang có công việc ổn định</span>
+                            </div>
+                        </label>
+                        <label class="flex items-center p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                            <input type="radio" name="jobStatus" value="0" class="h-4 w-4 text-blue-600">
+                            <div class="ml-3">
+                                <span class="block font-medium text-gray-900">Đang thất nghiệp</span>
+                                <span class="block text-sm text-gray-500">Tôi đang tìm kiếm cơ hội mới</span>
+                            </div>
+                        </label>
+                    </div>
+                    <div class="mt-6 flex justify-end gap-3">
+                        <button type="button" onclick="closeModal('statusModal')" class="btn btn-outline">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Modal Đăng ký BHTN -->
+    <div id="insuranceModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 modal-overlay">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg modal-container">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-900 mb-4">Đăng ký Bảo hiểm Thất nghiệp</h3>
+                <form id="insuranceForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Số tháng đã đóng BHXH</label>
+                        <input type="number" id="bhtn_months" required min="12" placeholder="VD: 36">
+                        <p class="text-xs text-gray-500 mt-1">* Tối thiểu 12 tháng</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Lý do nghỉ việc</label>
+                        <select id="bhtn_reason" required>
+                            <option value="">-- Chọn lý do --</option>
+                            <option value="Hết hạn hợp đồng">Hết hạn hợp đồng lao động</option>
+                            <option value="Thỏa thuận chấm dứt">Thỏa thuận chấm dứt HĐLĐ</option>
+                            <option value="Đơn phương chấm dứt">Đơn phương chấm dứt HĐLĐ</option>
+                            <option value="Bị sa thải">Bị sa thải / Kỷ luật</option>
+                            <option value="Doanh nghiệp giải thể">Doanh nghiệp giải thể / Phá sản</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Nơi muốn nhận trợ cấp</label>
+                        <input type="text" id="bhtn_place" required placeholder="VD: Trung tâm DVVL Quận 1">
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-md text-sm text-blue-700">
+                        <i class="fas fa-info-circle mr-1"></i> Hồ sơ sẽ được gửi đến cơ quan BHXH để xét duyệt. Quá trình có thể mất 5-7 ngày làm việc.
+                    </div>
+                    <div class="mt-6 flex justify-end gap-3">
+                        <button type="button" onclick="closeModal('insuranceModal')" class="btn btn-outline">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Gửi hồ sơ</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Modal Thêm/Sửa Kinh nghiệm -->
+    <div id="jobHistoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 modal-overlay">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg modal-container">
+            <div class="p-6">
+                <h3 id="jobHistoryModalTitle" class="text-xl font-bold text-gray-900 mb-4">Thêm kinh nghiệm</h3>
+                <form id="jobHistoryForm" class="space-y-4">
+                    <input type="hidden" id="job_id">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Tên công việc / Chức danh (*)</label>
+                        <input type="text" id="job_title" required placeholder="VD: Senior Developer">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Công ty / Nơi làm việc (*)</label>
+                        <input type="text" id="job_company" required placeholder="VD: Google Inc.">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Loại công việc</label>
+                        <select id="job_type">
+                            <option value="Toàn thời gian">Toàn thời gian</option>
+                            <option value="Bán thời gian">Bán thời gian</option>
+                            <option value="Thực tập">Thực tập</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Ngày bắt đầu (*)</label>
+                            <input type="date" id="job_start_date" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Ngày kết thúc</label>
+                            <input type="date" id="job_end_date">
+                            <div class="mt-2 flex items-center">
+                                <input type="checkbox" id="job_current" class="w-4 h-4 text-blue-600 rounded border-gray-300">
+                                <label for="job_current" class="ml-2 text-sm text-gray-600">Hiện tại đang làm</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex justify-end gap-3">
+                        <button type="button" onclick="closeModal('jobHistoryModal')" class="btn btn-outline">Hủy</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- (MỚI) Modal Ứng tuyển (Upload CV) -->
+    <div id="applyModal" class="hidden fixed inset-0 bg-black bg-opacity-50 modal-overlay flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md modal-container p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-900">Nộp đơn ứng tuyển</h3>
+                <button onclick="closeModal('applyModal')" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">Bạn đang ứng tuyển vị trí: <span id="apply_job_title" class="font-bold text-blue-600"></span></p>
+            <form id="applyForm" class="space-y-4">
+                <input type="hidden" id="apply_job_id">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tải lên CV của bạn (*)</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:bg-gray-50 transition-colors">
+                        <input type="file" id="apply_cv_file" accept=".pdf,.doc,.docx,.jpg,.png" required class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer">
+                        <p class="text-xs text-gray-500 mt-2">Hỗ trợ PDF, DOC, DOCX, JPG, PNG (Max 5MB)</p>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" onclick="closeModal('applyModal')" class="btn btn-outline">Hủy</button>
+                    <button type="submit" class="btn btn-primary w-full sm:w-auto">
+                        <i class="fas fa-paper-plane mr-2"></i> Nộp đơn
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="job.js"></script>
+    <script>
+        // Helper functions for modal
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+        
+        // Xử lý checkbox "Hiện tại đang làm"
+        document.getElementById('job_current').addEventListener('change', function(e) {
+            const endDateInput = document.getElementById('job_end_date');
+            if (e.target.checked) {
+                endDateInput.value = '';
+                endDateInput.disabled = true;
+                endDateInput.classList.add('bg-gray-100');
+            } else {
+                endDateInput.disabled = false;
+                endDateInput.classList.remove('bg-gray-100');
+            }
+        });
+    </script>
+</body>
+</html>

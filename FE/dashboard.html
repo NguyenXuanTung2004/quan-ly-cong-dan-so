@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Công dân Số</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0066ff;
+            --accent: #00d2ff;
+            --text-main: #1f2937;
+            --text-light: #f3f4f6;
+            --card-bg: rgba(255, 255, 255, 0.95);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            /* --- HÌNH NỀN ẢNH THẬT (SMART CITY) --- */
+            /* Lớp phủ gradient tối giúp chữ dễ đọc hơn */
+            background: linear-gradient(to bottom, rgba(15, 23, 42, 0.8), rgba(15, 23, 42, 0.95)), 
+                        url('https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* HEADER TRONG SUỐT */
+        .navbar {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.6); /* Nền tối mờ */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            letter-spacing: 0.5px;
+        }
+        
+        .logo i { color: var(--accent); font-size: 1.5rem; }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-welcome {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+        }
+        
+        .user-welcome span { color: white; font-weight: 600; }
+
+        .btn-logout {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: white;
+            color: #0f172a;
+        }
+
+        /* Back to home button (next to logout) */
+        .btn-home {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 8px 16px;
+            border-radius: 30px;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-home:hover {
+            background: rgba(255,255,255,0.12);
+            transform: translateY(-2px);
+        }
+
+        /* HERO BANNER - SLOGAN MỚI */
+        .hero-banner {
+            max-width: 1200px;
+            margin: 50px auto 40px auto;
+            padding: 0 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 0 0 10px 0;
+            background: linear-gradient(to right, #fff, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        /* THẺ TRẠNG THÁI (GLASSMORPHISM) */
+        .status-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .status-badge {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 25px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .status-dot {
+            height: 12px; width: 12px;
+            background-color: #fbbf24; /* Màu vàng mặc định */
+            border-radius: 50%;
+            box-shadow: 0 0 10px #fbbf24;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+        }
+
+        /* MAIN CONTENT */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto 60px auto;
+            padding: 0 20px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 25px;
+            text-decoration: none;
+            color: var(--text-main);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            background: #ffffff;
+        }
+
+        .card-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            color: var(--primary);
+            flex-shrink: 0;
+            transition: all 0.3s;
+        }
+
+        .card:hover .card-icon {
+            background: var(--primary);
+            color: white;
+            transform: rotate(-5deg);
+        }
+
+        .card-content h3 {
+            margin: 0 0 6px 0;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .card-content p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #64748b;
+            line-height: 1.5;
+        }
+
+        /* DISABLED STATE */
+        .card.disabled {
+            opacity: 0.75;
+            background: rgba(255, 255, 255, 0.8);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        .card.disabled .card-icon {
+            background: #cbd5e1;
+            color: #64748b;
+        }
+        .card.disabled::after {
+            content: '\f023';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: 20px; right: 20px;
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: white; padding: 30px; border-radius: 20px; text-align: center; width: 90%; max-width: 320px; }
+        .modal-btns { margin-top: 25px; display: flex; justify-content: center; gap: 15px; }
+        .btn-confirm { background: #ef4444; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+        .btn-cancel { background: #f1f5f9; color: #333; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; }
+
+        @media (max-width: 768px) {
+            .hero-title { font-size: 1.8rem; }
+            .grid-container { grid-template-columns: 1fr; }
+            .user-welcome span { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <i class="fa-solid fa-earth-asia"></i> Hệ Thống Quản Lý Dân cư
+        </a>
+        <div class="user-menu">
+            <div class="user-welcome">
+                Xin chào, <span id="header-username">Cư dân</span>
+            </div>
+            <!-- Back to homepage button -->
+            <a id="homeButton" href="index.html" class="btn-home" title="Về trang chủ" aria-label="Về trang chủ">
+                <i class="fa-solid fa-house"></i> Trang chủ
+            </a>
+            <button id="logoutButton" class="btn-logout">
+                <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+            </button>
+        </div>
+    </nav>
+
+    <section class="hero-banner">
+        <h1 class="hero-title">Chuyển Đổi Số Quốc Gia</h1>
+        <p class="hero-subtitle">Nền tảng tích hợp dữ liệu, nâng tầm chất lượng cuộc sống</p>
+        
+        <div class="status-container">
+            <div class="status-badge">
+                <div class="status-dot" id="status-dot"></div>
+                <div style="text-align: left;">
+                    <div style="font-size: 0.8rem; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px;">Trạng thái hồ sơ</div>
+                    <div id="status-text" style="font-weight: 600; color: white;">Đang tải dữ liệu...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <div class="grid-container">
+            
+            <a href="identity.html" class="card">
+                <div class="card-icon"><i class="fa-solid fa-fingerprint"></i></div>
+                <div class="card-content">
+                    <h3>Định danh điện tử</h3>
+                    <p>Xác thực danh tính số và quản lý thông tin cá nhân.</p>
+                </div>
+            </a>
+
+            <a href="education.html" class="card requires-identity">
+                <div class="card-icon"><i class="fa-solid fa-user-graduate"></i></div>
+                <div class="card-content">
+                    <h3>Hồ sơ Giáo dục</h3>
+                    <p>Tra cứu văn bằng, chứng chỉ, lịch sử học tập.</p>
+                </div>
+            </a>
+
+            <a href="health.html" class="card requires-identity">
+                <div class="card-icon"><i class="fa-solid fa-notes-medical"></i></div>
+                <div class="card-content">
+                    <h3>Hồ sơ Y tế</h3>
+                    <p>Sổ sức khỏe điện tử, lịch sử khám chữa bệnh, tiêm chủng.</p>
+                </div>
+            </a>
+
+            <a href="job.html" class="card requires-identity">
+                <div class="card-icon"><i class="fa-solid fa-briefcase"></i></div>
+                <div class="card-content">
+                    <h3>Việc làm & BHXH</h3>
+                    <p>Bảo hiểm xã hội, quá trình công tác, tìm kiếm việc làm.</p>
+                </div>
+            </a>
+
+            <a href="public_service.html" class="card requires-identity">
+                <div class="card-icon"><i class="fa-solid fa-building-columns"></i></div>
+                <div class="card-content">
+                    <h3>Dịch vụ công</h3>
+                    <p>Thực hiện các thủ tục hành chính công trực tuyến.</p>
+                </div>
+            </a>
+
+            <a href="security.html" class="card requires-identity">
+                <div class="card-icon"><i class="fa-solid fa-shield-cat"></i></div>
+                <div class="card-content">
+                    <h3>An ninh & Bảo mật</h3>
+                    <p>Quản lý tài khoản, đổi mật khẩu và lịch sử truy cập.</p>
+                </div>
+            </a>
+
+        </div>
+    </main>
+
+    <div id="logoutModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 style="margin-top:0">Xác nhận đăng xuất</h3>
+            <p style="color:#64748b">Bạn có muốn kết thúc phiên làm việc?</p>
+            <div class="modal-btns">
+                <button id="confirmLogoutNo" class="btn-cancel">Hủy</button>
+                <button id="confirmLogoutYes" class="btn-confirm">Đăng xuất</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>

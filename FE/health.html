@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ sơ Sức khỏe Điện tử</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --med-primary: #009688;
+            --med-dark: #00796b;
+            --med-secondary: #e0f2f1;
+            --text-dark: #263238;
+            --text-light: #546e7a;
+            --bg-body: #f4f7f6;
+            --danger: #e53935;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-body);
+            margin: 0; padding: 0;
+            color: var(--text-dark);
+            background-image: url('https://img.freepik.com/free-vector/hexagonal-technology-pattern-background_53876-116568.jpg?w=1380&t=st=1709455000');
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        /* HEADER */
+        .med-header {
+            background: white; height: 70px; display: flex; align-items: center; padding: 0 5%;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: sticky; top: 0; z-index: 1000;
+        }
+        .back-btn { text-decoration: none; color: var(--text-light); font-weight: 500; display: flex; align-items: center; gap: 8px; transition: 0.2s; }
+        .back-btn:hover { color: var(--med-primary); }
+        .page-title { margin-left: 20px; padding-left: 20px; border-left: 1px solid #ddd; font-size: 1.2rem; font-weight: 700; color: var(--med-primary); text-transform: uppercase; letter-spacing: 1px; }
+
+        /* CONTAINER */
+        .container {
+            max-width: 1200px; margin: 30px auto; padding: 0 20px;
+            display: grid; grid-template-columns: 350px 1fr; gap: 30px;
+        }
+
+        /* CARD */
+        .med-card { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); margin-bottom: 25px; border: 1px solid #eceff1; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid var(--med-secondary); }
+        .card-header h3 { margin: 0; color: var(--med-primary); font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        
+        /* BUTTONS */
+        .btn-icon { background: none; border: none; cursor: pointer; color: var(--text-light); transition: 0.2s; font-size: 1.1rem; padding: 5px; }
+        .btn-icon:hover { color: var(--med-primary); background: var(--med-secondary); border-radius: 50%; }
+        
+        .btn-add {
+            background: var(--med-primary); color: white; border: none; padding: 6px 12px; border-radius: 6px;
+            cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; font-weight: 500;
+        }
+        .btn-add:hover { background: var(--med-dark); }
+
+        /* 1. BHYT & INFO (Giữ nguyên style cũ) */
+        .insurance-card { background: linear-gradient(135deg, #009688 0%, #4db6ac 100%); border-radius: 15px; padding: 20px; color: white; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(0, 150, 136, 0.3); }
+        .insurance-card::after { content: ''; position: absolute; right: -20px; bottom: -20px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; }
+        .bhyt-header { display: flex; justify-content: space-between; font-size: 0.85rem; opacity: 0.9; margin-bottom: 15px; }
+        .bhyt-number { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; letter-spacing: 2px; }
+        .bhyt-info-row { display: flex; justify-content: space-between; }
+        .bhyt-label { font-size: 0.75rem; opacity: 0.8; } .bhyt-value { font-size: 0.9rem; font-weight: 500; }
+
+        .vital-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .vital-box { background: var(--med-secondary); padding: 15px; border-radius: 10px; text-align: center; }
+        .vital-icon { font-size: 1.5rem; color: var(--med-primary); margin-bottom: 5px; }
+        .vital-value { font-size: 1.2rem; font-weight: 700; color: var(--text-dark); }
+        .vital-label { font-size: 0.8rem; color: var(--text-light); }
+
+        /* 2. TIMELINE & ACTIONS */
+        .timeline { position: relative; padding-left: 30px; }
+        .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: #eceff1; }
+        .timeline-item { position: relative; margin-bottom: 25px; }
+        .timeline-dot { position: absolute; left: -35px; top: 0; width: 12px; height: 12px; background: var(--med-primary); border: 4px solid white; border-radius: 50%; box-shadow: 0 0 0 2px #e0f2f1; }
+        .timeline-date { font-size: 0.85rem; color: var(--text-light); margin-bottom: 5px; font-weight: 500; }
+        
+        .record-card {
+            background: #f8f9fa; border-left: 4px solid var(--med-primary); padding: 15px; border-radius: 0 8px 8px 0;
+            position: relative; /* Để đặt nút action */
+        }
+        
+        /* Nút Sửa/Xóa nằm góc phải thẻ */
+        .record-actions {
+            position: absolute; top: 10px; right: 10px;
+            display: flex; gap: 5px; opacity: 0.5; transition: 0.3s;
+        }
+        .record-card:hover .record-actions { opacity: 1; }
+        .btn-action-mini {
+            border: none; background: white; width: 30px; height: 30px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); color: var(--text-light);
+        }
+        .btn-action-mini:hover { color: var(--med-primary); transform: scale(1.1); }
+        .btn-action-mini.delete:hover { color: var(--danger); }
+
+        .record-title { font-weight: 600; color: var(--text-dark); margin-bottom: 5px; display: block; padding-right: 60px; /* Tránh đè nút */ }
+        .record-hospital { font-size: 0.9rem; color: var(--text-light); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; }
+        .record-doctor { font-size: 0.9rem; color: var(--text-light); font-style: italic; }
+        .record-diagnosis { background: white; padding: 10px; border-radius: 6px; border: 1px dashed #cfd8dc; margin-top: 10px; font-size: 0.9rem; color: #455a64; }
+
+        .file-list { margin-top: 10px; display: flex; gap: 10px; flex-wrap: wrap; }
+        .file-chip { background: white; border: 1px solid #b2dfdb; color: var(--med-primary); padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; text-decoration: none; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .file-chip:hover { background: var(--med-primary); color: white; }
+
+        /* MODAL */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center; }
+        .modal-overlay.active { display: flex; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; margin-top: 5px; box-sizing: border-box;}
+        .form-group { margin-bottom: 15px; }
+        .btn-save { background: var(--med-primary); color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: 500; font-size: 1rem;}
+        
+        .modal-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-header-row h3 { margin: 0; color: var(--med-primary); }
+        .btn-close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; }
+
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <nav class="med-header">
+        <a href="dashboard.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Về trang chủ</a>
+        <div class="page-title">Hồ sơ sức khỏe điện tử</div>
+    </nav>
+
+    <div class="container">
+        <div class="left-col">
+            <div class="med-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-id-card-clip"></i> Bảo hiểm Y tế</h3>
+                    <button class="btn-icon" id="btnEditBHYT"><i class="fa-solid fa-pen-to-square"></i></button>
+                </div>
+                <div class="insurance-card">
+                    <div class="bhyt-header"><span>BẢO HIỂM Y TẾ</span><span id="bhyt-expiry">HSD: ---</span></div>
+                    <div class="bhyt-number" id="bhyt-number">Chưa cập nhật</div>
+                    <div class="bhyt-info-row">
+                        <div><div class="bhyt-label">Nơi ĐKKCB Ban đầu</div><div class="bhyt-value" id="bhyt-place">---</div></div>
+                    </div>
+                </div>
+                <div id="bhyt-image-container" style="margin-top: 15px; text-align: center; display: none;">
+                    <img id="bhyt-img-display" src="" style="max-width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">
+                </div>
+            </div>
+
+            <div class="med-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-file-medical"></i> Thông tin chung</h3>
+                    <button class="btn-icon" id="btnEditInfo"><i class="fa-solid fa-pen-to-square"></i></button>
+                </div>
+                <div class="vital-grid">
+                    <div class="vital-box">
+                        <div class="vital-icon"><i class="fa-solid fa-droplet"></i></div>
+                        <div class="vital-label">Nhóm máu</div>
+                        <div class="vital-value" id="blood-type">--</div>
+                    </div>
+                    <div class="vital-box">
+                        <div class="vital-icon"><i class="fa-solid fa-allergies"></i></div>
+                        <div class="vital-label">Dị ứng</div>
+                        <div class="vital-value">Không</div>
+                    </div>
+                </div>
+                <div style="margin-top: 20px;">
+                    <strong style="color: var(--text-dark); font-size: 0.9rem;">Tiền sử bệnh:</strong>
+                    <p id="medical-history-text" style="color: var(--text-light); font-size: 0.9rem; margin-top: 5px; background: #fafafa; padding: 10px; border-radius: 6px;">Chưa có ghi nhận.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-col">
+            <div class="med-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-stethoscope"></i> Lịch sử khám bệnh</h3>
+                    <button class="btn-add" id="btnAddExam"><i class="fa-solid fa-plus"></i> Thêm mới</button>
+                </div>
+                <div class="timeline" id="exam-timeline">
+                    <div style="text-align: center; color: #999; padding: 20px;">Đang tải dữ liệu...</div>
+                </div>
+            </div>
+
+            <div class="med-card">
+                <div class="card-header">
+                    <h3><i class="fa-solid fa-syringe"></i> Lịch sử tiêm chủng</h3>
+                    <button class="btn-add" id="btnAddVaccine"><i class="fa-solid fa-plus"></i> Thêm mới</button>
+                </div>
+                <div class="timeline" id="vaccine-timeline"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header-row"><h3>Cập nhật hồ sơ</h3><button class="btn-close-modal">&times;</button></div>
+            <form id="infoForm">
+                <div class="form-group"><label>Nhóm máu</label><select id="edit-blood" class="form-control"><option value="">Chưa biết</option><option value="A">A</option><option value="B">B</option><option value="AB">AB</option><option value="O">O</option></select></div>
+                <div class="form-group"><label>Tiền sử bệnh lý</label><textarea id="edit-history" class="form-control" rows="4"></textarea></div>
+                <button type="submit" class="btn-save">Lưu thông tin</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="bhytModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header-row"><h3>Cập nhật BHYT</h3><button class="btn-close-modal">&times;</button></div>
+            <form id="bhytForm">
+                <div class="form-group"><label>Số thẻ BHYT</label><input type="text" id="edit-bhyt-num" class="form-control" required></div>
+                <div class="form-group"><label>Nơi đăng ký KCB</label><input type="text" id="edit-bhyt-place" class="form-control" required></div>
+                <div class="form-group"><label>Ngày hết hạn</label><input type="date" id="edit-bhyt-exp" class="form-control"></div>
+                <div class="form-group"><label>Ảnh thẻ BHYT</label><input type="file" id="edit-bhyt-img" class="form-control" accept="image/*"></div>
+                <button type="submit" class="btn-save">Lưu BHYT</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="examModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header-row"><h3 id="examModalTitle">Thêm lịch sử khám</h3><button class="btn-close-modal">&times;</button></div>
+            <form id="examForm">
+                <input type="hidden" id="examId"> <div class="form-group"><label>Ngày khám (*)</label><input type="date" id="examDate" class="form-control" required></div>
+                <div class="form-group"><label>Cơ sở y tế (*)</label><input type="text" id="examPlace" class="form-control" required placeholder="BV Bạch Mai..."></div>
+                <div class="form-group"><label>Bác sĩ</label><input type="text" id="examDoctor" class="form-control"></div>
+                <div class="form-group"><label>Chẩn đoán (*)</label><textarea id="examDiagnosis" class="form-control" rows="2" required></textarea></div>
+                <div class="form-group"><label>Phác đồ / Ghi chú</label><textarea id="examNote" class="form-control" rows="2"></textarea></div>
+                <div class="form-group"><label>File đính kèm (Ảnh/PDF)</label><input type="file" id="examFiles" class="form-control" multiple></div>
+                <button type="submit" class="btn-save">Lưu hồ sơ</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="vaccineModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header-row"><h3 id="vaccineModalTitle">Thêm lịch sử tiêm</h3><button class="btn-close-modal">&times;</button></div>
+            <form id="vaccineForm">
+                <input type="hidden" id="vaccineId">
+                <div class="form-group"><label>Tên Vắc-xin (*)</label><input type="text" id="vaccineName" class="form-control" required placeholder="AstraZeneca, Viêm gan B..."></div>
+                <div class="form-group"><label>Đơn vị tiêm (*)</label><input type="text" id="vaccinePlace" class="form-control" required></div>
+                <div class="form-group"><label>Ngày tiêm (*)</label><input type="date" id="vaccineDate" class="form-control" required></div>
+                <div class="form-group"><label>Ảnh chứng nhận</label><input type="file" id="vaccineFile" class="form-control"></div>
+                <button type="submit" class="btn-save">Lưu hồ sơ</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="health.js"></script>
+</body>
+</html>

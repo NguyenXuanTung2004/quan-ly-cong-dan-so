@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Quản Trị - Hệ thống Công dân số</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css"> 
+</head>
+<body>
+
+    <nav class="admin-sidebar">
+        <div class="sidebar-header">
+            <i class="fa-solid fa-user-tie"></i>
+            <h3>Quản Trị Viên</h3>
+        </div>
+       <ul class="sidebar-menu">
+            <li class="active"><a href="#dashboard" data-target="dashboard-section"><i class="fa-solid fa-gauge"></i> Tổng quan</a></li>
+            <li><a href="#identity" data-target="identity-section"><i class="fa-solid fa-id-card"></i> Quản lý định danh <span class="badge-pending">...</span></a></li>
+           
+            <li><a href="#education" data-target="education-section"><i class="fa-solid fa-graduation-cap"></i> QL Giáo dục</a></li>
+            <li><a href="#health" data-target="health-section"><i class="fa-solid fa-heart-pulse"></i> QL Y tế</a></li>
+            <li><a href="#jobs" data-target="jobs-section"><i class="fa-solid fa-briefcase"></i> QL Việc làm</a></li>
+            <li><a href="#public-service" data-target="public-service-section"><i class="fa-solid fa-file-signature"></i> QL Dịch vụ công <span id="badge-public-pending" class="badge-pending" style="display:none">0</span></a></li>
+            <li><a href="#system" data-target="system-section"><i class="fa-solid fa-server"></i> Quản trị hệ thống</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <button id="adminLogoutBtn"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</button>
+        </div>
+    </nav>
+
+    <main class="admin-main">
+        <header class="admin-topbar">
+            <h2 id="admin-page-title">Tổng quan hệ thống</h2>
+            <div class="admin-info">
+                Xin chào, <span id="admin-name">Admin</span>
+            </div>
+        </header>
+
+        <div class="admin-content">
+            
+            <section id="dashboard-section" class="active-section">
+    <div class="stats-grid">
+        <div class="stat-card blue">
+            <div class="stat-main">
+                <h3 id="stat-total-users">0</h3> </div>
+            <p>Tổng công dân (User)</p>
+            <i class="fa-solid fa-users"></i>
+        </div>
+
+        <div class="stat-card orange">
+            <div class="stat-main">
+                <h3 id="stat-pending-count">0</h3>
+            </div>
+            <p>Định danh chờ duyệt</p>
+            <i class="fa-solid fa-clock"></i>
+        </div>
+
+        <div class="stat-card green">
+            <div class="stat-main">
+                <h3 id="stat-new-users">0</h3> </div>
+            <p>Tài khoản mới tháng này</p>
+            <i class="fa-solid fa-chart-line"></i>
+        </div>
+
+        <div class="stat-card red">
+            <div class="stat-main">
+                <h3 id="stat-pending-services">0</h3> </div>
+            <p>Hồ sơ DVC chờ xử lý</p>
+            <i class="fa-solid fa-file-signature"></i>
+        </div>
+    </div>
+</section>
+
+            <section id="identity-section">
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card green">
+                        <div class="stat-main">
+                            <h3 id="stat-approved-count">0</h3>
+                            <span id="stat-approved-percent">(0%)</span>
+                        </div>
+                        <p>Đã duyệt</p>
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-main">
+                            <h3 id="stat-pending-identity-count">0</h3>
+                            <span id="stat-pending-percent">(0%)</span>
+                        </div>
+                        <p>Chờ duyệt</p>
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="stat-card red">
+                         <div class="stat-main">
+                            <h3 id="stat-rejected-count">0</h3>
+                            <span id="stat-rejected-percent">(0%)</span>
+                        </div>
+                        <p>Bị từ chối</p>
+                        <i class="fa-solid fa-times-circle"></i>
+                    </div>
+                     <div class="stat-card gray">
+                         <div class="stat-main">
+                            <h3 id="stat-null-count">0</h3>
+                            <span id="stat-null-percent">(0%)</span>
+                        </div>
+                        <p>Chưa định danh</p>
+                        <i class="fa-solid fa-question-circle"></i>
+                    </div>
+                     <div class="stat-card indigo">
+                         <div class="stat-main">
+                            <h3 id="stat-revoked-count">0</h3>
+                            <span id="stat-revoked-percent">(0%)</span>
+                        </div>
+                        <p>Đã hủy</p>
+                        <i class="fa-solid fa-ban"></i>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Tra cứu hồ sơ định danh</h3> 
+                    <div class="search-box">
+                        <input type="text" id="identitySearchInput" placeholder="Tìm theo tên hoặc CCCD...">
+                        <button id="identitySearchButton"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Họ và tên</th>
+                                <th>CCCD khai báo</th>
+                                <th>Ngày gửi</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="identity-table-body"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="users-section">
+                <h3>Danh sách toàn bộ công dân</h3>
+                <p>Đang phát triển...</p>
+            </section>
+            <section id="system-section">
+    <div class="section-header">
+        <h3>Quản trị & Vận hành Hệ thống</h3>
+    </div>
+
+    <div class="stats-grid" style="margin-bottom: 30px;">
+        <div class="stat-card blue">
+            <h3 id="sys-ram">Loading...</h3>
+            <p>RAM Usage (GB)</p>
+            <i class="fa-solid fa-memory"></i>
+        </div>
+        <div class="stat-card green">
+            <h3 id="sys-db-size">Loading...</h3>
+            <p>Database Size</p>
+            <i class="fa-solid fa-database"></i>
+        </div>
+        <div class="stat-card orange">
+            <h3 id="sys-uptime">Loading...</h3>
+            <p>Server Uptime</p>
+            <i class="fa-solid fa-clock"></i>
+        </div>
+    </div>
+
+   <div class="admin-edu-card-full">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px;">
+            <h4 style="margin: 0; border: none; padding: 0;"><i class="fa-solid fa-users-gear"></i> Phân quyền người dùng</h4>
+            
+            <div class="search-box" style="box-shadow: none;">
+                <input type="text" id="sysUserSearchInput" placeholder="Tìm tên, tài khoản, ID..." style="padding: 6px 12px; width: 250px; font-size: 0.9rem;">
+                <button id="sysUserSearchButton" style="padding: 6px 12px;"><i class="fa-solid fa-search"></i></button>
+            </div>
+        </div>
+
+        <div class="table-container" style="max-height: 300px; overflow-y: auto;">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Tên đăng nhập</th>
+                        <th>Họ tên</th>
+                        <th>Vai trò hiện tại</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody id="sys-user-list"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="admin-grid-2-col">
+        <div class="admin-edu-card">
+            <h4>
+                <span><i class="fa-solid fa-floppy-disk"></i> Sao lưu & Phục hồi</span>
+                <button id="btn-trigger-backup" class="btn-admin-add"><i class="fa-solid fa-play"></i> Backup Ngay</button>
+            </h4>
+            <p class="text-sm text-gray-500 mb-2">Lịch sử sao lưu gần nhất:</p>
+            <div id="sys-backup-list" class="space-y-2">
+                </div>
+        </div>
+
+        <div class="admin-edu-card">
+            <h4><i class="fa-solid fa-triangle-exclamation"></i> Log Lỗi / Cảnh báo</h4>
+            <div id="sys-log-list" style="max-height: 200px; overflow-y: auto; font-size: 0.9em;">
+                </div>
+        </div>
+    </div>
+</section>
+            <section id="education-section">
+                <div class="section-header">
+                    <h3>Tổng quan Giáo dục</h3>
+                </div>
+
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card blue">
+                        <h3 id="stat-edu-level3">0</h3>
+                        <p>Tổng hồ sơ Cấp 3</p>
+                        <i class="fa-solid fa-graduation-cap"></i>
+                    </div>
+                    <div class="stat-card green">
+                        <h3 id="stat-edu-higher">0</h3>
+                        <p>Tổng hồ sơ ĐH & CĐ</p>
+                        <i class="fa-solid fa-building-columns"></i>
+                    </div>
+                     <div class="stat-card purple"> 
+                         <h3 id="stat-edu-certs">0</h3>
+                        <p>Tổng Văn bằng/Chứng chỉ</p>
+                        <i class="fa-solid fa-certificate"></i>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Tra cứu chi tiết</h3>
+                    <div class="search-box">
+                        <input type="text" id="eduSearchInput" placeholder="Tìm công dân theo Tên hoặc ID_CD...">
+                        <button id="eduSearchButton"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+                
+                <div class="table-container" id="edu-search-results-container" style="margin-bottom: 20px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID Công Dân</th>
+                                <th>Họ và tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Email</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="edu-search-results-body">
+                            <tr><td colspan="5" style="text-align: center; padding: 20px;">Hãy bắt đầu tìm kiếm...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <hr style="margin-bottom: 20px;">
+
+                <div id="edu-details-container" style="display: none;">
+                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 20px;">
+                        Chi tiết Hồ sơ Giáo dục của: <span id="edu-citizen-name" style="color: #0072ff;"></span>
+                    </h3>
+                    
+                    <div class="admin-grid-2-col">
+                        <div class="admin-edu-card">
+                            <h4>
+                                <span><i class="fa-solid fa-school"></i> Học vấn Cấp 1</span>
+                                <button id="admin-edit-level1" class="btn-admin-edit"><i class="fa-solid fa-edit"></i> Sửa</button>
+                            </h4>
+                            <p><strong>Trường:</strong> <span id="admin-level-1-school"></span></p>
+                            <p><strong>Niên khóa:</strong> <span id="admin-level-1-years"></span></p>
+                        </div>
+                        <div class="admin-edu-card">
+                            <h4>
+                                <span><i class="fa-solid fa-book-open"></i> Học vấn Cấp 2</span>
+                                <button id="admin-edit-level2" class="btn-admin-edit"><i class="fa-solid fa-edit"></i> Sửa</button>
+                            </h4>
+                            <p><strong>Trường:</strong> <span id="admin-level-2-school"></span></p>
+                            <p><strong>Niên khóa:</strong> <span id="admin-level-2-years"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-edu-card-full">
+                        <h4>
+                            <span><i class="fa-solid fa-graduation-cap"></i> Học vấn Cấp 3</span>
+                            <button id="admin-add-level3" class="btn-admin-add"><i class="fa-solid fa-plus"></i> Thêm</button>
+                        </h4>
+                        <div id="admin-level-3-list"></div>
+                    </div>
+                    
+                    <div class="admin-edu-card-full">
+                        <h4>
+                            <span><i class="fa-solid fa-building-columns"></i> Đại học</span>
+                            <button id="admin-add-university" class="btn-admin-add"><i class="fa-solid fa-plus"></i> Thêm</button>
+                        </h4>
+                        <div id="admin-university-list"></div>
+                    </div>
+                    
+                    <div class="admin-edu-card-full">
+                        <h4>
+                            <span><i class="fa-solid fa-school"></i> Cao đẳng / Trung cấp / Khác</span>
+                             <button id="admin-add-college" class="btn-admin-add"><i class="fa-solid fa-plus"></i> Thêm</button>
+                        </h4>
+                        <div id="admin-college-other-list"></div>
+                    </div>
+                    
+                    <div class="admin-edu-card-full">
+                        <h4>
+                            <span><i class="fa-solid fa-certificate"></i> Văn bằng & Chứng chỉ</span>
+                             <button id="admin-add-cert" class="btn-admin-add"><i class="fa-solid fa-plus"></i> Thêm</button>
+                        </h4>
+                        <div id="admin-certificate-list"></div>
+                    </div>
+                </div>
+                
+                <div id="edu-details-not-found" style="display: none; text-align: center; padding: 30px; background: #f9fafb; border-radius: 8px;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2rem; color: #9ca3af;"></i>
+                    <p style="margin-top: 10px; color: #6b7280;">Không tìm thấy hồ sơ giáo dục cho công dân này.</p>
+                </div>
+            </section>
+            
+            <section id="health-section">
+                <div class="section-header">
+                    <h3>Tổng quan Y tế</h3>
+                </div>
+                
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card green">
+                        <div class="stat-main">
+                            <h3 id="stat-health-bhyt">0</h3>
+                            <span id="stat-health-bhyt-percent">(0%)</span>
+                        </div>
+                        <p>Tỉ lệ có BHYT/HSYT</p>
+                        <i class="fa-solid fa-id-card"></i>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Tra cứu chi tiết hồ sơ Y tế</h3>
+                    <div class="search-box">
+                        <input type="text" id="healthSearchInput" placeholder="Tìm công dân theo Tên hoặc ID_CD...">
+                        <button id="healthSearchButton"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+                
+                <div class="table-container" id="health-search-results-container" style="margin-bottom: 20px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>ID Công Dân</th>
+                                <th>Họ và tên</th>
+                                <th>Ngày sinh</th>
+                                <th>Email</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="health-search-results-body">
+                            <tr><td colspan="5" style="text-align: center; padding: 20px;">Hãy bắt đầu tìm kiếm...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <hr style="margin-bottom: 20px;">
+                
+                <div id="health-details-container" style="display: none;">
+                    <h3 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 20px;">
+                        Chi tiết Hồ sơ Y tế của: <span id="health-citizen-name" style="color: #0072ff;"></span>
+                    </h3>
+                    
+                    <div class="admin-edu-card-full">
+                        <h4>
+                            <span><i class="fa-solid fa-user-shield"></i> Thông tin Y tế Chung</span>
+                            <button id="admin-edit-health-general" class="btn-admin-edit"><i class="fa-solid fa-edit"></i> Sửa</button>
+                        </h4>
+                        <div class="admin-grid-2-col">
+                            <p><strong>Nhóm máu:</strong> <span id="admin-health-nhomMau"></span></p>
+                            <p><strong>Tiền sử bệnh:</strong> <span id="admin-health-tienSuBenh"></span></p>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-edu-card-full">
+                        <h4>
+                            <span><i class="fa-solid fa-id-card"></i> Bảo hiểm Y tế (BHYT)</span>
+                            <button id="admin-edit-health-bhyt" class="btn-admin-edit"><i class="fa-solid fa-edit"></i> Sửa</button>
+                        </h4>
+                        <p><strong>Số thẻ:</strong> <span id="admin-health-soBHYT"></span></p>
+                        <p><strong>Nơi KCB:</strong> <span id="admin-health-noiKCB"></span></p>
+                        <p><strong>Ngày hết hạn:</strong> <span id="admin-health-ngayHetHan"></span></p>
+                        <div class="admin-edu-file-gallery" id="admin-health-bhyt-anh-wrapper">
+                            </div>
+                    </div>
+                    
+                    <div class="admin-edu-card-full">
+                        <h4>
+                            <span><i class="fa-solid fa-stethoscope"></i> Lịch sử Khám bệnh</span>
+                            <button id="admin-add-health-exam" class="btn-admin-add"><i class="fa-solid fa-plus"></i> Thêm</button>
+                        </h4>
+                        <div id="admin-health-exam-list"></div>
+                    </div>
+                    
+                    <div class="admin-edu-card-full">
+                        <h4>
+                            <span><i class="fa-solid fa-syringe"></i> Lịch sử Tiêm chủng</span>
+                            <button id="admin-add-health-vacc" class="btn-admin-add"><i class="fa-solid fa-plus"></i> Thêm</button>
+                        </h4>
+                        <div id="admin-health-vacc-list"></div>
+                    </div>
+                </div>
+                
+                <div id="health-details-not-found" style="display: none; text-align: center; padding: 30px; background: #f9fafb; border-radius: 8px;">
+                    <i class="fa-solid fa-folder-open" style="font-size: 2rem; color: #9ca3af;"></i>
+                    <p style="margin-top: 10px; color: #6b7280;">Không tìm thấy hồ sơ y tế cho công dân này.</p>
+                </div>
+            </section>
+
+            <section id="jobs-section">
+                <div class="section-header">
+                    <h3>Tổng quan Việc làm</h3>
+                </div>
+
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card red">
+                        <div class="stat-main">
+                            <h3 id="stat-job-unemployed">0</h3>
+                            <span id="stat-job-unemployed-percent">(0%)</span>
+                        </div>
+                        <p>Thất nghiệp</p>
+                        <i class="fa-solid fa-user-injured"></i>
+                    </div>
+                    <div class="stat-card blue">
+                        <h3 id="stat-job-active">0</h3>
+                        <p>Tin tuyển dụng</p>
+                        <i class="fa-solid fa-bullhorn"></i>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Tra cứu Hồ sơ Lao động</h3>
+                    <div class="search-box">
+                        <input type="text" id="jobCitizenSearchInput" placeholder="Tìm công dân theo Tên hoặc ID_CD...">
+                        <button id="jobCitizenSearchButton"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+                
+                <div class="table-container" style="margin-bottom: 30px;">
+                    <table class="admin-table">
+                        <thead>
+                            <tr><th>ID</th><th>Họ tên</th><th>Email</th><th>Hành động</th></tr>
+                        </thead>
+                        <tbody id="job-citizen-list">
+                            <tr><td colspan="4" style="text-align: center; padding: 20px;">Nhập tên để tìm kiếm...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="admin-job-profile-container" style="display: none; background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 30px;">
+                    <h4 style="font-size: 1.2rem; margin-bottom: 15px; font-weight: bold;">
+                        Hồ sơ lao động: <span id="admin-job-profile-name" style="color: #0072ff;"></span>
+                    </h4>
+                    
+                    <div style="margin-bottom: 15px;">
+                        <strong>Trạng thái hiện tại:</strong> <span id="admin-job-status-badge" class="status-badge"></span>
+                    </div>
+                    
+                    <div class="admin-grid-2-col">
+                        <div class="admin-edu-card">
+                            <h5 style="border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 10px; font-weight: 600;">Lịch sử làm việc</h5>
+                            <div id="admin-job-history-list"></div>
+                        </div>
+                        <div class="admin-edu-card">
+                             <h5 style="border-bottom: 1px solid #ddd; padding-bottom: 8px; margin-bottom: 10px; font-weight: 600;">Danh mục ứng tuyển</h5>
+                             <div id="admin-job-apply-list"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 30px 0;">
+
+                <div class="section-header">
+                    <h3>Quản lý Tin Tuyển Dụng</h3>
+                    <button id="btn-add-job-post" class="btn-admin-add" style="padding: 8px 15px; font-size: 1rem;">
+                        <i class="fa-solid fa-plus"></i> Đăng tin mới
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Tiêu đề</th>
+                                <th>Công ty</th>
+                                <th>Mức lương</th>
+                                <th>Ngày đăng</th>
+                                <th>Hạn nộp</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-job-post-list"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="public-service-section">
+                <div class="section-header">
+                    <h3>Tổng quan Dịch vụ công</h3>
+                </div>
+
+                <div class="stats-grid" style="margin-bottom: 30px;">
+                    <div class="stat-card orange">
+                        <h3 id="stat-ps-pending">0</h3>
+                        <p>Hồ sơ chờ xử lý</p>
+                        <i class="fa-solid fa-clock"></i>
+                    </div>
+                    <div class="stat-card green">
+                        <h3 id="stat-ps-approved">0</h3>
+                        <p>Đã hoàn thành</p>
+                        <i class="fa-solid fa-check-circle"></i>
+                    </div>
+                    <div class="stat-card red">
+                        <h3 id="stat-ps-rejected">0</h3>
+                        <p>Đã từ chối</p>
+                        <i class="fa-solid fa-ban"></i>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Danh sách Hồ sơ yêu cầu</h3>
+                    <div class="search-box">
+                        <input type="text" id="publicServiceSearchInput" placeholder="Tìm theo tên người nộp hoặc Mã hồ sơ...">
+                        <button id="publicServiceSearchButton"><i class="fa-solid fa-search"></i></button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Mã HS</th>
+                                <th>Loại dịch vụ</th>
+                                <th>Người nộp</th>
+                                <th>Ngày gửi</th>
+                                <th>Trạng thái</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="public-service-table-body">
+                            <tr><td colspan="6" style="text-align:center;">Đang tải dữ liệu...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </div> 
+        </main>
+
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Chi tiết hồ sơ định danh</h2>
+            <div class="modal-body">
+                <div class="info-column">
+                   <p><strong>ID:</strong> <span id="m-id"></span></p>
+    <p><strong>Họ tên:</strong> <span id="m-hoten"></span></p>
+    <p><strong>CCCD:</strong> <span id="m-cccd"></span></p>
+    <p><strong>Ngày sinh:</strong> <span id="m-ngaysinh"></span></p>
+    <p><strong>Giới tính:</strong> <span id="m-gioitinh"></span></p>
+
+    <p><strong>SĐT:</strong> <span id="m-sdt"></span></p>
+    <p><strong>Dân tộc:</strong> <span id="m-dantoc"></span></p>
+    <p><strong>Tôn giáo:</strong> <span id="m-tongiao"></span></p>
+    <p><strong>Quê quán:</strong> <span id="m-quequan"></span></p>
+    <p><strong>Thường trú:</strong> <span id="m-thuongtru"></span></p>  
+                </div>
+                <div class="image-column">
+                    <div>
+                        <p>Mặt trước:</p>
+                        <img id="m-img-truoc" src="" alt="Mặt trước">
+                    </div>
+                    <div>
+                        <p>Mặt sau:</p>
+                        <img id="m-img-sau" src="" alt="Mặt sau">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btnReject" class="btn-modal btn-reject" style="display: none;">Từ chối</button>
+                <button id="btnApprove" class="btn-modal btn-approve" style="display: none;">Duyệt hồ sơ</button>
+                <button id="btnRevoke" class="btn-modal btn-revoke" style="display: none;">Hủy định danh</button>
+                <button id="btnRestoreApprove" class="btn-modal btn-restore" style="display: none;">Khôi phục (Duyệt)</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="adminEduFileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeAdminEduFileModal">&times;</span>
+            <h2 id="adminEduFileModalTitle">Xem File Đính Kèm</h2>
+            <div id="adminEduFileModalContent"></div>
+        </div>
+    </div>
+    
+    <div id="adminLevel1Modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" onclick="document.getElementById('adminLevel1Modal').style.display='none'">&times;</span>
+            <h2>Chỉnh sửa Học vấn Cấp 1</h2>
+            <form id="adminLevel1Form" class="modal-form">
+                <div><label for="admin_truongCap1">Tên trường</label><input type="text" id="admin_truongCap1"></div>
+                <div><label for="admin_thoiGianCap1">Niên khóa (VD: 2005-2010)</label><input type="text" id="admin_thoiGianCap1"></div>
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu Cấp 1</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminLevel2Modal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" onclick="document.getElementById('adminLevel2Modal').style.display='none'">&times;</span>
+            <h2>Chỉnh sửa Học vấn Cấp 2</h2>
+            <form id="adminLevel2Form" class="modal-form">
+                <div><label for="admin_truongCap2">Tên trường</label><input type="text" id="admin_truongCap2"></div>
+                <div><label for="admin_thoiGianCap2">Niên khóa (VD: 2010-2014)</label><input type="text" id="admin_thoiGianCap2"></div>
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu Cấp 2</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminLearningProcessModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-modal" onclick="document.getElementById('adminLearningProcessModal').style.display='none'">&times;</span>
+            <h2 id="adminLearningProcessModalTitle">Thêm/Sửa Quá Trình Học Tập</h2>
+            <form id="adminLearningProcessForm" class="modal-form">
+                <input type="hidden" id="admin_learningProcessId">
+                <input type="hidden" id="admin_learningProcessCapHoc">
+                
+                <div class="modal-grid-2-col">
+                    <div><label for="admin_lp_tenTruong">Tên trường (*)</label><input type="text" id="admin_lp_tenTruong" required></div>
+                    <div><label for="admin_lp_thoiGian">Niên khóa (*)</label><input type="text" id="admin_lp_thoiGian" placeholder="VD: 2014-2017" required></div>
+                </div>
+
+                <div id="admin_lp_fields_cap3" style="display: none;">
+                    <div class="modal-grid-3-col">
+                        <div><label for="admin_lp_diem10">ĐTB Lớp 10</label><input type="number" step="0.01" id="admin_lp_diem10"></div>
+                        <div><label for="admin_lp_diem11">ĐTB Lớp 11</label><input type="number" step="0.01" id="admin_lp_diem11"></div>
+                        <div><label for="admin_lp_diem12">ĐTB Lớp 12</label><input type="number" step="0.01" id="admin_lp_diem12"></div>
+                    </div>
+                    <div class="modal-grid-2-col">
+                        <div><label for="admin_lp_hanhKiem">Hạnh kiểm</label><input type="text" id="admin_lp_hanhKiem"></div>
+                        <div><label for="admin_lp_hocLuc">Học lực</label><input type="text" id="admin_lp_hocLuc"></div>
+                    </div>
+                    <div class="modal-grid-3-col">
+                        <div><label for="admin_lp_fileHocBa10">File Học bạ 10</label><input type="file" id="admin_lp_fileHocBa10"></div>
+                        <div><label for="admin_lp_fileHocBa11">File Học bạ 11</label><input type="file" id="admin_lp_fileHocBa11"></div>
+                        <div><label for="admin_lp_fileHocBa12">File Học bạ 12</label><input type="file" id="admin_lp_fileHocBa12"></div>
+                    </div>
+                </div>
+
+                <div id="admin_lp_fields_daihoc" style="display: none;">
+                     <div class="modal-grid-2-col">
+                        <div><label for="admin_lp_nganhHoc">Ngành học</label><input type="text" id="admin_lp_nganhHoc"></div>
+                        <div><label for="admin_lp_heDaoTao">Hệ đào tạo</label><input type="text" id="admin_lp_heDaoTao" placeholder="VD: Chính quy..."></div>
+                    </div>
+                    <div class="modal-grid-2-col">
+                        <div><label for="admin_lp_gpa">GPA (Hệ 4)</label><input type="number" step="0.01" id="admin_lp_gpa"></div>
+                        <div><label for="admin_lp_loaiTotNghiep">Loại tốt nghiệp</label><input type="text" id="admin_lp_loaiTotNghiep" placeholder="VD: Giỏi..."></div>
+                    </div>
+                      <div><label for="admin_lp_fileBangDiem">File Bảng điểm/Bằng TN</label><input type="file" id="admin_lp_fileBangDiem"></div>
+                </div>
+
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu thông tin</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminCertificateModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="document.getElementById('adminCertificateModal').style.display='none'">&times;</span>
+            <h2 id="adminCertificateModalTitle">Thêm/Sửa Chứng Chỉ</h2>
+            <form id="adminCertificateForm" class="modal-form">
+                <input type="hidden" id="admin_certificateId">
+                <div><label for="admin_cc_ten">Tên văn bằng/chứng chỉ (*)</label><input type="text" id="admin_cc_ten" required></div>
+                <div><label for="admin_cc_donViCap">Đơn vị cấp (*)</label><input type="text" id="admin_cc_donViCap" required></div>
+                <div><label for="admin_cc_loai">Loại (*)</label><input type="text" id="admin_cc_loai" placeholder="VD: Chứng chỉ Ngoại ngữ" required></div>
+                <div class="modal-grid-2-col">
+                    <div><label for="admin_cc_ngayCap">Ngày cấp (*)</label><input type="date" id="admin_cc_ngayCap" required></div>
+                    <div><label for="admin_cc_ngayHetHan">Ngày hết hạn</label><input type="date" id="admin_cc_ngayHetHan"></div>
+                </div>
+                 <div><label for="admin_cc_file">File đính kèm</label><input type="file" id="admin_cc_file"></div>
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu chứng chỉ</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="adminHealthGeneralModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-modal" onclick="document.getElementById('adminHealthGeneralModal').style.display='none'">&times;</span>
+            <h2>Chỉnh sửa Thông tin Chung (Y tế)</h2>
+            <form id="adminHealthGeneralForm" class="modal-form">
+                <div><label for="admin_health_nhomMau">Nhóm máu</label><input type="text" id="admin_health_nhomMau" placeholder="VD: A+"></div>
+                <div><label for="admin_health_tienSuBenh">Tiền sử bệnh</label><textarea id="admin_health_tienSuBenh" rows="4" placeholder="Ghi nhận các bệnh lý nền..."></textarea></div>
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu thông tin</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="adminHealthBHYTModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="document.getElementById('adminHealthBHYTModal').style.display='none'">&times;</span>
+            <h2>Chỉnh sửa Bảo hiểm Y tế</h2>
+            <form id="adminHealthBHYTForm" class="modal-form">
+                <div><label for="admin_health_soBHYT">Số thẻ BHYT (*)</label><input type="text" id="admin_health_soBHYT" required></div>
+                <div><label for="admin_health_noiKCB">Nơi ĐK khám chữa bệnh (*)</label><input type="text" id="admin_health_noiKCB" required></div>
+                <div><label for="admin_health_ngayHetHan">Ngày hết hạn</label><input type="date" id="admin_health_ngayHetHan"></div>
+                <div><label for="admin_health_anhBHYT">Ảnh thẻ BHYT</label><input type="file" id="admin_health_anhBHYT" accept="image/*"></div>
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu BHYT</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="adminHealthExamModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-modal" onclick="document.getElementById('adminHealthExamModal').style.display='none'">&times;</span>
+            <h2 id="adminHealthExamModalTitle">Thêm/Sửa Lịch sử Khám bệnh</h2>
+            <form id="adminHealthExamForm" class="modal-form">
+                <input type="hidden" id="admin_health_examId">
+                <div class="modal-grid-2-col">
+                    <div><label for="admin_health_ngayKham">Ngày khám (*)</label><input type="date" id="admin_health_ngayKham" required></div>
+                    <div><label for="admin_health_coSoYTe">Cơ sở y tế (*)</label><input type="text" id="admin_health_coSoYTe" required></div>
+                </div>
+                <div><label for="admin_health_bacSi">Bác sĩ điều trị</label><input type="text" id="admin_health_bacSi"></div>
+                <div><label for="admin_health_chanDoan">Chẩn đoán (*)</label><textarea id="admin_health_chanDoan" rows="3" required></textarea></div>
+                <div><label for="admin_health_phacDo">Phác đồ / Ghi chú</label><textarea id="admin_health_phacDo" rows="3"></textarea></div>
+                <div><label>File đính kèm (Mới)</label><input type="file" id="admin_health_filesDinhKem" multiple accept="image/*,application/pdf"></div>
+                <div id="admin_health_existing_exam_files_container" style="display: none;">
+                    <label>Các file đã đính kèm:</label><div id="admin_health_existing_exam_files" class="space-y-1"></div>
+                </div>
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu hồ sơ khám</button></div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="adminHealthVaccinationModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" onclick="document.getElementById('adminHealthVaccinationModal').style.display='none'">&times;</span>
+            <h2 id="adminHealthVaccinationModalTitle">Thêm/Sửa Lịch sử Tiêm chủng</h2>
+            <form id="adminHealthVaccinationForm" class="modal-form">
+                <input type="hidden" id="admin_health_vaccId">
+                <div><label for="admin_health_tenVacXin">Tên vắc-xin (*)</label><input type="text" id="admin_health_tenVacXin" required></div>
+                <div><label for="admin_health_donVi">Đơn vị tiêm chủng (*)</label><input type="text" id="admin_health_donVi" required></div>
+                <div><label for="admin_health_ngayTiem">Ngày tiêm (*)</label><input type="date" id="admin_health_ngayTiem" required></div>
+                <div><label for="admin_health_fileXacMinh">Ảnh xác minh</label><input type="file" id="admin_health_fileXacMinh" accept="image/*,application/pdf"></div>
+                <div id="admin_health_existing_vacc_file_container"></div>
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu mũi tiêm</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminJobPostModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <span class="close-modal" onclick="document.getElementById('adminJobPostModal').style.display='none'">&times;</span>
+            <h2 id="adminJobPostModalTitle">Đăng tin tuyển dụng</h2>
+            <form id="adminJobPostForm" class="modal-form">
+                <input type="hidden" id="admin_job_id">
+                <div><label>Tiêu đề công việc (*)</label><input type="text" id="admin_job_title" required placeholder="VD: Lập trình viên Backend"></div>
+                <div class="modal-grid-2-col">
+                    <div><label>Tên công ty (*)</label><input type="text" id="admin_job_company" required placeholder="VD: Viettel"></div>
+                     <div><label>Ngành nghề</label><input type="text" id="admin_job_industry" placeholder="VD: CNTT"></div>
+                </div>
+                <div class="modal-grid-2-col">
+                    <div><label>Mức lương</label><input type="text" id="admin_job_salary" placeholder="VD: 15-20 triệu"></div>
+                    <div><label>Địa điểm làm việc</label><input type="text" id="admin_job_location" placeholder="VD: Hà Nội"></div>
+                </div>
+                 <div class="modal-grid-2-col">
+                    <div><label>Hạn nộp hồ sơ</label><input type="date" id="admin_job_deadline"></div>
+                    <div></div>
+                </div>
+                 <div><label>Mô tả công việc</label><textarea id="admin_job_desc" rows="4" placeholder="Mô tả chi tiết..."></textarea></div>
+                <div class="modal-footer"><button type="submit" class="btn-modal btn-approve">Lưu tin tuyển dụng</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div id="adminJobApplicantsModal" class="modal">
+        <div class="modal-content" style="max-width: 900px;">
+            <span class="close-modal" onclick="document.getElementById('adminJobApplicantsModal').style.display='none'">&times;</span>
+            <h2 id="adminJobApplicantsTitle">Danh sách ứng viên</h2>
+            <div class="table-container mt-4" style="max-height: 400px; overflow-y: auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID CD</th>
+                            <th>Họ tên</th>
+                            <th>Email</th>
+                            <th>Ngày nộp</th>
+                            <th>CV</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-job-applicants-list">
+                        <tr><td colspan="5" style="text-align: center;">Đang tải...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminPublicServiceModal" class="modal">
+        <div class="modal-content" style="max-width: 800px;">
+            <span class="close-modal" onclick="document.getElementById('adminPublicServiceModal').style.display='none'">&times;</span>
+            <h2 id="psModalTitle">Chi tiết hồ sơ dịch vụ</h2>
+            
+            <div class="modal-body" style="display: block;"> 
+                <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                    <div class="admin-grid-2-col">
+                        <p><strong>Người nộp:</strong> <span id="ps_nguoiNop"></span></p>
+                        <p><strong>CCCD:</strong> <span id="ps_cccd"></span></p>
+                        <p><strong>Ngày gửi:</strong> <span id="ps_ngayGui"></span></p>
+                        <p><strong>Trạng thái:</strong> <span id="ps_trangThai"></span></p>
+                    </div>
+                </div>
+
+                <h4 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">Thông tin tờ khai</h4>
+                <div id="ps_json_details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                    </div>
+
+                <h4 style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">Tài liệu đính kèm</h4>
+                <div id="ps_file_container" style="margin-bottom: 20px;">
+                    </div>
+
+                <div id="ps_action_area" style="margin-top: 20px; border-top: 1px solid #ddd; padding-top: 20px;">
+                    <label><strong>Ghi chú xử lý:</strong></label>
+                    <textarea id="ps_ghiChu" class="modal-form" rows="3" style="width: 100%; margin-top: 5px;" placeholder="Nhập lý do từ chối hoặc ghi chú hoàn thành..."></textarea>
+                    
+                    <div class="modal-footer" style="margin-top: 15px;">
+                        <button id="btnRejectPS" class="btn-modal btn-reject">Từ chối</button>
+                        <button id="btnApprovePS" class="btn-modal btn-approve">Hoàn thành / Duyệt</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
